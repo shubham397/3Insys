@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Card.css";
 import Add_Edit from "./Add_Edit";
-import mockData from "../helpers/mockData";
 
 const Card = (props) => {
-  const [datas, setDatas] = useState(mockData);
+  const [datas, setDatas] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
   const [editIndex, setEditIndex] = useState();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    let mockData = JSON.parse(localStorage.getItem("mockData"));
+    setDatas(mockData);
+  }, []);
 
-  const onCloseModal = () => setShowEdit(false);
+  const onCloseModal = () => {
+    let mockData = JSON.parse(localStorage.getItem("mockData"));
+    setDatas(mockData);
+    setShowEdit(false);
+  };
 
   const handleEditBtn = (id) => {
     setEditIndex(id);
@@ -18,63 +24,24 @@ const Card = (props) => {
   };
 
   const handleDeleteBtn = (id) => {
-    setDatas(datas.filter((data) => data.id !== id));
+    let newData = datas.filter((data) => data.id !== id);
+    localStorage.setItem("mockData", JSON.stringify(newData));
+    setDatas(newData);
   };
 
   const handleAddBtn = () => {
-    setEditIndex();
+    setEditIndex(false);
     setShowEdit(true);
   };
 
-  const handleAddSubmit = (event) => {
-    event.preventDefault();
-    let newProduct = {
-      id: datas.length + 1,
-      size: event.target[0].value,
-      price: event.target[1].value,
-      colour: event.target[2].value,
-      made: event.target[3].value,
-      style: event.target[4].value,
-      gender: event.target[5].value,
-      image:event.target[6].value,
-      description: event.target[7].value,
-    };
-    datas.push(newProduct);
-    alert("product Added successfully")
-    onCloseModal();
-  };
-
-  const handleEditSubmit = (event) => {
-    event.preventDefault();
-    let editProducts = datas.map((data, index)=>{
-        if(data.id === editIndex){
-            let newProduct = {
-                id: data.id,
-                size: event.target[0].value,
-                price: event.target[1].value,
-                colour: event.target[2].value,
-                made: event.target[3].value,
-                style: event.target[4].value,
-                gender: event.target[5].value,
-                image:event.target[6].value,
-                description: event.target[7].value,
-              };
-            return newProduct;
-        }
-        else{
-            return data;
-        }
-    })
-    setDatas(editProducts);
-    alert("product Edited successfully")
-    onCloseModal();
-  };
+  function handleRedirect(id) {
+    props.history.push(`/description/${id}`);
+    window.location.reload();
+  }
 
   return (
     <div className="card-container">
       <Add_Edit
-        handleSubmit={handleAddSubmit}
-        handleEditSubmit={handleEditSubmit}
         onCloseModal={onCloseModal}
         showEdit={showEdit}
         editIndex={editIndex}
@@ -105,7 +72,14 @@ const Card = (props) => {
               </div>
             </div>
             <div className="card-image">
-              <img src={data.image} width="100px" height="100px" />
+              <img
+                onClick={() => {
+                  handleRedirect(data.id);
+                }}
+                src={data.image}
+                width="100px"
+                height="100px"
+              />
             </div>
             <div className="card-details">
               <div className="card-subDetails">{data.size}</div>

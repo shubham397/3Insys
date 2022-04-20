@@ -1,0 +1,43 @@
+.des-main{
+    display: flex;
+    justify-content: start;
+}
+
+.des-details{
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+    justify-content: space-between;
+}
+
+.des-image{
+    width: 400px;
+    height: 400px
+}
+
+.des-des{
+    width: 600px;
+    height: 200px;
+    border: 1px solid black;
+    border-radius: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 25px;
+}
+
+.edit-delete{
+    display: flex;
+    border-radius: 100px;
+}
+
+.des-header{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.label-div{
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+}

@@ -1,25 +1,86 @@
 import React, { useState, useEffect } from "react";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
-import mockData from "../helpers/mockData";
+// import mockData from "../helpers/mockData";
 
 const Add_Edit = (props) => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setData(mockData.filter((data) => data.id === props.editIndex));
+    if(props.editIndex){
+      let mockData = JSON.parse(localStorage.getItem('mockData'));
+      setData(mockData.filter((data) => data.id == props.editIndex));
+    }
+    else{
+      setData([]);
+    }
   }, [props.editIndex]);
 
   useEffect(() => {
     setOpen(props.showEdit);
   }, [props.showEdit]);
 
+  const handleAddSubmit = (event) => {
+    event.preventDefault();
+    let mockData = JSON.parse(localStorage.getItem('mockData'));
+    let newId
+    if(mockData.length===0){
+      newId = 1
+    }
+    else{
+      newId = mockData[mockData.length-1]?.id + 1
+    }
+    let newProduct = {
+      id: newId,
+      size: event.target[0].value,
+      price: event.target[1].value,
+      colour: event.target[2].value,
+      made: event.target[3].value,
+      style: event.target[4].value,
+      gender: event.target[5].value,
+      image: event.target[6].value,
+      description: event.target[7].value,
+    };
+    data.push(newProduct);
+    mockData.push(newProduct);
+    localStorage.setItem("mockData", JSON.stringify(mockData));
+    alert("product Added successfully");
+    props.onCloseModal()
+  };
+
+  const handleEditSubmit = (event) => {
+    event.preventDefault();
+    let mockData = JSON.parse(localStorage.getItem('mockData'));
+    let editProducts = mockData.map((data, index) => {
+      if (data.id === props.editIndex) {
+        let newProduct = {
+          id: data.id,
+          size: event.target[0].value,
+          price: event.target[1].value,
+          colour: event.target[2].value,
+          made: event.target[3].value,
+          style: event.target[4].value,
+          gender: event.target[5].value,
+          image: event.target[6].value,
+          description: event.target[7].value,
+        };
+        return newProduct;
+      } else {
+        return data;
+      }
+    });
+    setData(editProducts);
+    localStorage.setItem("mockData", JSON.stringify(editProducts));
+    alert("product Edited successfully");
+    props.onCloseModal()
+  };
+
   const AddProduct = () => {
     return (
       <div style={{ width: "75%", marginLeft: "15%" }}>
         <h3>Add New T-Shirt</h3>
-        <form onSubmit={props.handleSubmit}>
+        <form onSubmit={handleAddSubmit}>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="size">Size</label>
@@ -119,7 +180,7 @@ const Add_Edit = (props) => {
     return (
       <div style={{ width: "75%", marginLeft: "15%" }}>
         <h3>Edit a T-Shirt</h3>
-        <form onSubmit={props.handleEditSubmit}>
+        <form onSubmit={handleEditSubmit}>
           {data.map((d, index) => {
             return (
               <div className="form-row" key={index}>

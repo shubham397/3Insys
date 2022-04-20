@@ -4,12 +4,13 @@ import '../Styles/Dashboard.css'
 
 const Dashboard = (props) => {
   useEffect(() => {
+    // console.log(props)
   }, []);
 
   return (
     <div className="product-catalog">
         <h3>T-Shirt for sale</h3>
-        <Card />
+        <Card history={props.history} />
     </div>
   );
 };
