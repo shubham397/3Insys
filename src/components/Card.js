@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Card.css";
 import Add_Edit from "./Add_Edit";
+import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
 
 const Card = (props) => {
   const [datas, setDatas] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
   const [editIndex, setEditIndex] = useState();
+  const [modalDeleteShow, setModalDeleteShow] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState();
 
   useEffect(() => {
     let mockData = JSON.parse(localStorage.getItem("mockData"));
@@ -27,6 +30,7 @@ const Card = (props) => {
     let newData = datas.filter((data) => data.id !== id);
     localStorage.setItem("mockData", JSON.stringify(newData));
     setDatas(newData);
+    setModalDeleteShow(false)
   };
 
   const handleAddBtn = () => {
@@ -37,6 +41,38 @@ const Card = (props) => {
   function handleRedirect(id) {
     props.history.push(`/description/${id}`);
     window.location.reload();
+  }
+
+  function DeleteModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Delete Product
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Do you really want to Delete?</Modal.Body>
+        <Modal.Footer>
+          <Button className="btn btn-danger btn-block" onClick={props.onHide}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              handleDeleteBtn(deleteIndex);
+
+              // deleteOneContact(contactId);
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   return (
@@ -53,7 +89,8 @@ const Card = (props) => {
               <div>
                 <img
                   onClick={() => {
-                    handleDeleteBtn(data.id);
+                    setModalDeleteShow(true)
+                    setDeleteIndex(data.id)
                   }}
                   src="/trash.png"
                   width="35px"
@@ -99,6 +136,10 @@ const Card = (props) => {
           />
         </div>
       </div>
+      <DeleteModal
+        show={modalDeleteShow}
+        onHide={() => setModalDeleteShow(false)}
+      />
     </div>
   );
 };

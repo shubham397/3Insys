@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Description.css";
 import Add_Edit from "./Add_Edit";
+import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
 
 const Description = (props) => {
   const [data, setData] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
   const [editIndex, setEditIndex] = useState();
+  const [modalDeleteShow, setModalDeleteShow] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState();
 
   useEffect(() => {
     let id = window.location.href.split("/")[4];
@@ -19,12 +22,46 @@ const Description = (props) => {
   };
 
   const handleDeleteBtn = (id) => {
-    let newData = data.filter((data) => data.id !== id);
+    let mockData = JSON.parse(localStorage.getItem("mockData"));
+    let newData = mockData.filter((data) => data.id !== id);
     localStorage.setItem("mockData", JSON.stringify(newData));
     setData(newData);
+    setModalDeleteShow(false)
     props.history.push(`/`);
     window.location.reload();
   };
+
+  function DeleteModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Delete Product
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Do you really want to Delete?</Modal.Body>
+        <Modal.Footer>
+          <Button className="btn btn-danger btn-block" onClick={props.onHide}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              handleDeleteBtn(deleteIndex);
+
+              // deleteOneContact(contactId);
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 
   const onCloseModal = () => {
     let mockData = JSON.parse(localStorage.getItem("mockData"));
@@ -45,7 +82,8 @@ const Description = (props) => {
           <div>
             <img
               onClick={() => {
-                handleDeleteBtn(data[0]?.id);
+                setModalDeleteShow(true)
+                setDeleteIndex(data[0]?.id)
               }}
               src="/trash.png"
               width="35px"
@@ -94,6 +132,10 @@ const Description = (props) => {
         </div>
       </div>
       <div className="des-des">{data[0]?.description}</div>
+      <DeleteModal
+        show={modalDeleteShow}
+        onHide={() => setModalDeleteShow(false)}
+      />
     </div>
   );
 };

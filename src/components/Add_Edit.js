@@ -15,7 +15,7 @@ const Add_Edit = (props) => {
     else{
       setData([]);
     }
-  }, [props.editIndex]);
+  }, [props.editIndex, props.showEdit]);
 
   useEffect(() => {
     setOpen(props.showEdit);
@@ -78,7 +78,7 @@ const Add_Edit = (props) => {
 
   const AddProduct = () => {
     return (
-      <div style={{ width: "75%", marginLeft: "15%" }}>
+      <div style={{ width: "65%"}}>
         <h3>Add New T-Shirt</h3>
         <form onSubmit={handleAddSubmit}>
           <div className="form-row">
@@ -178,7 +178,7 @@ const Add_Edit = (props) => {
 
   const EditProduct = () => {
     return (
-      <div style={{ width: "75%", marginLeft: "15%" }}>
+      <div style={{ width: "65%"}}>
         <h3>Edit a T-Shirt</h3>
         <form onSubmit={handleEditSubmit}>
           {data.map((d, index) => {
